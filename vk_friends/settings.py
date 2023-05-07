@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'auth_service',
     'rest_framework',
+    'friendship',
     'rest_framework_simplejwt',
     'drf_spectacular'
 ]
