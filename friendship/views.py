@@ -1,25 +1,11 @@
 from django.db.transaction import atomic
-from django.shortcuts import render
 
-# Create your views here.
-from django.conf import settings
-from django.shortcuts import render
 from rest_framework.decorators import authentication_classes, permission_classes, api_view
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-from rest_framework.views import APIView
+
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.authentication import authenticate
-
 from auth_service.authentication import CustomAuthentication
-# from vk_friends.auth_service.models import Customer
-# from vk_friends.auth_service.serializer  import CustomerSerializer
-# from django.contrib.auth import get_user_model
-# from rest_framework_simplejwt.authentication import JWTAuthentication, JWTStatelessUserAuthentication
-# from rest_framework_simplejwt.tokens import RefreshToken
-# from django.db.transaction import atomic
-
 from .serializer import CutomerSerializer, IdSerializer, AcceptSerializer
 from .utils import add_request_or_add_friend, add_to_friendship
 from auth_service.models import Customer
@@ -77,5 +63,35 @@ def accept_request_in_friends(request):
         request_in_friend.delete()
         return Response({"status": f"declined {user_request.username}`s request in friend list"}, status=status.HTTP_400_BAD_REQUEST)
 
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([CustomAuthentication])
+def profile(request):
+    user = request.user
+    serializer = CutomerSerializer(user)
+    return Response(data=serializer.data)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([CustomAuthentication])
+def delete_from_friendship(request):
+    serializer = IdSerializer(data = request.data)
+    if serializer.is_valid():
+        user = request.user
+        id = serializer.validated_data['id']
+        # user.prefetch_related('friends')
+        friend = Customer.objects.filter(id = id).first()
+        if friend not in user.friends.all():
+            return Response({"status":f"user {friend.username} is not your friend"})
+        with atomic():
+            request_in_friend = FriendshipRequest.objects.filter(from_person=user, to_person=friend).first()
+            if request_in_friend:
+                request_in_friend.delete()
+            user.friends.remove(friend)
+            friend.friends.remove(user)
+        return Response({"status": f"deleted {friend.username} from friend list"})
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
