@@ -11,7 +11,9 @@ class Customer(AbstractUser):
     subscribed_on = models.ManyToManyField("Customer",blank=True,related_name= "customer_subscribed_on",through = 'FriendshipRequest')
     @property
     def followed_by(self):
-        followed_by = Customer.objects.filter(Q(subscribed_on =self.id ) & ~Q(friends =self.id ))
+        followed_by = Customer.objects\
+            .prefetch_related('subscribed_on') \
+            .filter(subscribed_on =self.id )
         return followed_by
     def __str__(self):
         return f"{self.id}"
