@@ -9,6 +9,9 @@ class IdSerializer(serializers.Serializer):
 class AcceptSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     accept = serializers.BooleanField()
+class ResponseSerializer(serializers.Serializer):
+    success = serializers.BooleanField()
+    detail = serializers.CharField(max_length='255')
 
 
 class RecursiveSerializer(serializers.ModelSerializer):
@@ -16,7 +19,7 @@ class RecursiveSerializer(serializers.ModelSerializer):
         model = Customer
         fields = ['id','username']
 
-class CutomerSerializer(serializers.ModelSerializer):
+class CustomerSerializer(serializers.ModelSerializer):
     subscribed_on = RecursiveSerializer(many=True, read_only=True)
     followed_by =  RecursiveSerializer(many=True, read_only=True)
     friends = RecursiveSerializer(many=True, read_only=True)
