@@ -16,7 +16,6 @@ class RecursiveSerializer(serializers.ModelSerializer):
         model = Customer
         fields = ['id','username']
 
-
 class CutomerSerializer(serializers.ModelSerializer):
     subscribed_on = RecursiveSerializer(many=True, read_only=True)
     followed_by =  RecursiveSerializer(many=True, read_only=True)
@@ -25,5 +24,7 @@ class CutomerSerializer(serializers.ModelSerializer):
         depth = 0
         model = Customer
         fields =['id','username', 'subscribed_on', 'friends','followed_by']
+
+
 
 
