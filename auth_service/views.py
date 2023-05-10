@@ -10,12 +10,13 @@ from .authentication import get_tokens_for_user, set_jwt_cookie
 from .serializer import CustomerAuthSerializer, JwtResponse
 from django.contrib.auth import get_user_model
 from django.db.transaction import atomic
-
+from .swagger_descriptions import login,logout,register
 from friendship.serializer import ResponseSerializer
 
 class Logout(APIView):
 
     @extend_schema(
+        description=logout,
         responses=ResponseSerializer,
     )
     def post(self,request):
@@ -27,6 +28,8 @@ class Login(APIView):
     serializer_class = CustomerAuthSerializer
 
     @extend_schema(
+        description=login,
+
         request=CustomerAuthSerializer,
         responses= JwtResponse,
     )
@@ -52,6 +55,8 @@ class CreateUser(APIView):
     serializer_class = CustomerAuthSerializer
 
     @extend_schema(
+        description=register,
+
         request=CustomerAuthSerializer,
         responses=JwtResponse,
     )
