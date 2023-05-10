@@ -2,12 +2,12 @@ from rest_framework import serializers
 from rest_framework import serializers
 
 from .models import Customer
+class JwtResponse(serializers.Serializer):
+    access_token = serializers.CharField(max_length=100)
+    refresh_token = serializers.CharField(max_length=100)
 
-class RecursiveField(serializers.Serializer):
-    def to_representation(self, value):
-        serializer = self.parent.parent.__class__(value, context=self.context)
-        return serializer.data
-class CustomerSerializer(serializers.Serializer):
+
+class CustomerAuthSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     username = serializers.CharField(max_length=100)
     password = serializers.CharField(max_length=100)

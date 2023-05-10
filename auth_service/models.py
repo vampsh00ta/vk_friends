@@ -8,13 +8,13 @@ from django.db.models import Q
 
 class Customer(AbstractUser):
     friends = models.ManyToManyField("Customer",blank=True,related_name='customer_friends')
-    subscribed_on = models.ManyToManyField("Customer",blank=True,related_name= "customer_subscribed_on",through = 'FriendshipRequest')
+    subscriptions = models.ManyToManyField("Customer",blank=True,related_name= "customer_subscribed_on",through = 'FriendshipRequest')
     @property
-    def followed_by(self):
-        followed_by = Customer.objects\
-            .prefetch_related('subscribed_on') \
-            .filter(subscribed_on =self.id )
-        return followed_by
+    def followers(self):
+        followers = Customer.objects\
+            .prefetch_related('subscriptions') \
+            .filter(subscriptions =self.id )
+        return followers
     def __str__(self):
         return f"{self.id}"
 
