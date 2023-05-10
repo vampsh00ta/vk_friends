@@ -20,13 +20,13 @@ class RecursiveSerializer(serializers.ModelSerializer):
         fields = ['id','username']
 
 class CustomerSerializer(serializers.ModelSerializer):
-    subscribed_on = RecursiveSerializer(many=True, read_only=True)
-    followed_by =  RecursiveSerializer(many=True, read_only=True)
+    subscriptions = RecursiveSerializer(many=True, read_only=True)
+    followers =  RecursiveSerializer(many=True, read_only=True)
     friends = RecursiveSerializer(many=True, read_only=True)
     class Meta:
         depth = 0
         model = Customer
-        fields =['id','username', 'subscribed_on', 'friends','followed_by']
+        fields =['id','username', 'subscriptions', 'friends','followers']
 
 
 
