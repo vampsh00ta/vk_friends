@@ -1,0 +1,44 @@
+version: '3'
+services:
+  web:
+    image: django_app
+    build:
+      context: .
+    command: gunicorn vk_friends.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - app_data:/app/
+    ports:
+      - "8000:8000"
+    restart: always
+    env_file:
+      - ./.env
+    links:
+      - db
+
+  migration:
+      image: django_app
+      command: python manage.py migrate --noinput
+
+      volumes:
+        - app_data:/app/
+      env_file:
+        - ./.env
+      links:
+        - web
+  db:
+    image: postgres:14.0-alpine
+    volumes:
+      - ./postgres_data:/var/lib/postgres/data/
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./.env
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASS=${DB_PASSWORD}
+
+volumes:
+  postgres_data:
+  app_data:

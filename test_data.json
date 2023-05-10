@@ -1,0 +1,27 @@
+[
+
+  {
+    "model": "auth_service.Customer",
+    "id": 1,
+    "fields": {
+       "name": "vlad",
+      "password": "vlad"
+    }
+  },
+  {
+    "model": "auth_service.Customer",
+    "id": 2,
+    "fields": {
+       "name": "ivan",
+      "password": "ivan"
+    }
+  },
+  {
+    "model": "auth_service.Customer",
+    "id": 3,
+    "fields": {
+       "name": "alex",
+      "password": "alex"
+    }
+  }
+]
