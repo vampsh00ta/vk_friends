@@ -16,7 +16,7 @@ def add_to_friendship(request_in_friend:FriendshipRequest,user:Customer,friend:C
     friend.friends.add(user)
 def remove_from_friend_list(user:Customer,friend):
     old_req = OldRequest.objects.filter(
-        Q(from_person=friend, to_person=user) or Q(from_person=user, to_person=friend  )
+        Q(from_person=friend, to_person=user) | Q(from_person=user, to_person=friend  )
     ).first()
     if old_req.from_person == friend:
         req = FriendshipRequest(from_person=old_req.from_person, to_person=old_req.to_person)
