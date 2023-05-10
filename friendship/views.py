@@ -105,6 +105,8 @@ class RemoveFriend(APIView):
             with atomic():
                 user = request.user
                 id = data["id"]
+                if user.id == id:
+                    return Response({"success": False, "detail":"cant remove yourself "})
                 friend = Customer.objects.filter(id = id).first()
                 if friend not in user.friends.all():
                     return Response(data = {"success":False,"detail":"not your friend"},status=status.HTTP_400_BAD_REQUEST)
