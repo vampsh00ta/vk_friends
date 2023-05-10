@@ -43,7 +43,9 @@ class SendRequest(APIView):
                 user = request.user
                 if friend_id == user.id:
                     return Response(data={"success": False,'detail':'cant added yourself'}, status=status.HTTP_400_BAD_REQUEST)
-                friend = Customer.objects.get(id=friend_id)
+                friend = Customer.objects.filter(id=friend_id).first()
+                if not friend:
+                    return Response(data={"success": False,'detail':'theres no such user'}, status=status.HTTP_404_NOT_FOUND)
                 request_in_friend = FriendshipRequest.objects.filter(from_person=user, to_person=friend).first()
                 if request_in_friend:
                     return Response(data={"success": False,'detail':'already following'}, status=status.HTTP_200_OK)
